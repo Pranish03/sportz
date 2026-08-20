@@ -1,1 +1,17 @@
-import express from "express";
+import express from 'express';
+
+const app = express();
+const PORT = 8000;
+
+// Middleware to parse incoming JSON payloads
+app.use(express.json());
+
+// Root GET route returning a short message
+app.get('/', (req, res) => {
+  res.send('Server is up and running!');
+});
+
+// Start listening on port 8000 and log the server URL
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+});
