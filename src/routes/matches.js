@@ -22,17 +22,18 @@ matchRouter.get("/", async (req, res) => {
         const data = await db.select().from(matches).orderBy(desc(matches.createdAt)).limit(limit);
         res.status(200).json({ data })
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Failed to get matches" });
     }
 })
 
 matchRouter.post("/", async (req, res) => {
     const parsed = createMatchSchema.safeParse(req.body)
-    const { data: { startTime, endTime, homeScore, awayScore } } = parsed
 
     if (!parsed.success) {
         return res.status(400).json({ message: "Invalid payload", errors: parsed.error })
     }
+
+    const { data: { startTime, endTime, homeScore, awayScore } } = parsed
 
     try {
         const [event] = await db.insert(matches).values({
@@ -46,6 +47,6 @@ matchRouter.post("/", async (req, res) => {
 
         res.status(201).json({ event })
     } catch (err) {
-        res.status(500).json({ message: "Internal Server Error" })
+        res.status(500).json({ message: "Failed to create match" })
     }
 })
