@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import net from 'net';
 import { matchRouter } from "./routes/matches.js";
 import { attachWebSocketServer } from "./ws/server.js";
 import { securityMiddleware } from "./arcjet.js";
@@ -24,7 +25,8 @@ const { broadcastMatchCreated } = attachWebSocketServer(server);
 app.locals.broadcastMatchCreated = broadcastMatchCreated;
 
 server.listen(PORT, HOST, () => {
-  const baseUrl = HOST === '0.0.0.0' ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
+  const hostSegment = HOST === '0.0.0.0' ? 'localhost' : (net.isIPv6(HOST) ? `[${HOST}]` : HOST);
+  const baseUrl = `http://${hostSegment}:${PORT}`;
 
   console.log(`Server is running on ${baseUrl}`);
   console.log(`WebSocket Server is running on ${baseUrl.replace('http', 'ws')}/ws`);
