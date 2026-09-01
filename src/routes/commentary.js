@@ -3,7 +3,7 @@ import { eq, desc } from "drizzle-orm";
 import { matchIdParamSchema } from "../validation/matches.js";
 import { createCommentarySchema, listCommentaryQuerySchema } from "../validation/commentary.js";
 import { db } from "../db/db.js";
-import { commentary } from "../db/schema.js";
+import { commentary, matches } from "../db/schema.js";
 
 export const commentaryRouter = Router({ mergeParams: true });
 
@@ -52,6 +52,15 @@ commentaryRouter.post("/", async (req, res) => {
     }
 
     try {
+        const [existingMatch] = await db
+            .select({ id: matches.id })
+            .from(matches)
+            .where(eq(matches.id, paramParsed.data.id));
+
+        if (!existingMatch) {
+            return res.status(404).json({ message: "Match not found" });
+        }
+
         const [entry] = await db
             .insert(commentary)
             .values({
@@ -62,6 +71,9 @@ commentaryRouter.post("/", async (req, res) => {
 
         res.status(201).json({ data: entry });
     } catch (err) {
+        if (err?.code === '23503') {
+            return res.status(404).json({ message: "Match not found" });
+        }
         res.status(500).json({ message: "Failed to create commentary" });
     }
 });
