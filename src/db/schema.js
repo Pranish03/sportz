@@ -1,9 +1,7 @@
 import { pgTable, serial, text, integer, timestamp, jsonb, pgEnum } from 'drizzle-orm/pg-core';
 
-// Match Status Enum
 export const matchStatusEnum = pgEnum('match_status', ['scheduled', 'live', 'finished']);
 
-// Matches Table
 export const matches = pgTable('matches', {
   id: serial('id').primaryKey(),
   sport: text('sport').notNull(),
@@ -17,7 +15,6 @@ export const matches = pgTable('matches', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Commentary Table
 export const commentary = pgTable('commentary', {
   id: serial('id').primaryKey(),
   matchId: integer('match_id')

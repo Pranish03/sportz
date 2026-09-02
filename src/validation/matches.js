@@ -1,13 +1,11 @@
 import { z } from 'zod';
 
-// Match Status constants
 export const MATCH_STATUS = {
   SCHEDULED: 'scheduled',
   LIVE: 'live',
   FINISHED: 'finished',
 };
 
-// Schema validating optional limit as coerced positive integer max 100
 export const listMatchesQuerySchema = z.object({
   limit: z.coerce
     .number()
@@ -17,17 +15,14 @@ export const listMatchesQuerySchema = z.object({
     .optional(),
 });
 
-// Schema validating required id as coerced positive integer
 export const matchIdParamSchema = z.object({
   id: z.coerce.number().int().positive('id must be a positive integer'),
 });
 
-// ISO date string validation helper
 const isoDateString = z.string().refine((val) => !isNaN(Date.parse(val)), {
   message: 'Invalid ISO date string',
 });
 
-// Schema validating match creation payload
 export const createMatchSchema = z
   .object({
     sport: z.string().min(1, 'sport is required'),
@@ -52,7 +47,6 @@ export const createMatchSchema = z
     }
   });
 
-// Schema validating update score payload requiring homeScore & awayScore
 export const updateScoreSchema = z.object({
   homeScore: z.coerce.number().int().min(0, 'homeScore must be non-negative'),
   awayScore: z.coerce.number().int().min(0, 'awayScore must be non-negative'),

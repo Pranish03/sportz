@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Schema validating optional query parameters for listing commentary
 export const listCommentaryQuerySchema = z.object({
   limit: z.coerce
     .number()
@@ -10,7 +9,6 @@ export const listCommentaryQuerySchema = z.object({
     .optional(),
 });
 
-// Schema validating payload for creating commentary
 export const createCommentarySchema = z.object({
   minute: z.coerce.number().int().min(0, 'minute must be non-negative').optional(),
   sequence: z.coerce.number().int().optional(),
